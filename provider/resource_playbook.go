@@ -293,7 +293,7 @@ func resourcePlaybookCreate(data *schema.ResourceData, meta interface{}) error {
 		args = append(args, "--force-handlers")
 	}
 
-	args = append(args, "-e", "hostname="+name)
+	args = append(args, "-i", name)
 
 	if len(tags) > 0 {
 		tmpTags := []string{}
@@ -471,7 +471,8 @@ func resourcePlaybookUpdate(data *schema.ResourceData, meta interface{}) error {
 	log.Printf("Temp Inventory File: %s", tempInventoryFile)
 
 	// Get all available temp inventories and pass them as args
-	inventories := providerutils.GetAllInventories(inventoryFileNamePrefix)
+	//inventories := providerutils.GetAllInventories(inventoryFileNamePrefix)
+	inventories := []string{tempInventoryFile}
 
 	log.Print("[INVENTORIES]:")
 	log.Print(inventories)
@@ -504,9 +505,10 @@ func resourcePlaybookUpdate(data *schema.ResourceData, meta interface{}) error {
 
 	if runAnsiblePlayErr != nil {
 		playbookFailMsg := fmt.Sprintf("ERROR [ansible-playbook]: couldn't run ansible-playbook\n%s! "+
-			"There may be an error within your playbook.\n%v",
+			"There may be an error within your playbook.\n%v\n%v",
 			playbook,
 			runAnsiblePlayErr,
+			string(runAnsiblePlayOut),
 		)
 		if !ignorePlaybookFailure {
 			log.Fatal(playbookFailMsg)

@@ -293,7 +293,7 @@ func resourcePlaybookCreate(data *schema.ResourceData, meta interface{}) error {
 		args = append(args, "--force-handlers")
 	}
 
-	args = append(args, "-i", name)
+	args = append(args, "-e", "hostname="+name)
 
 	if len(tags) > 0 {
 		tmpTags := []string{}
